@@ -1,3 +1,6 @@
 [submodule "Libraries/CarbyneSteamContext"]
 	path = Libraries/CarbyneSteamContext
 	url = https://github.com/Nielk1/CarbyneSteamContext.git
+[submodule "Libraries/open-steamworks"]
+	path = Libraries/open-steamworks
+	url = https://github.com/Nielk1/open-steamworks.git
