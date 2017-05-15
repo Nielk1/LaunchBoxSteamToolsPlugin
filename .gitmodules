@@ -1,0 +1,3 @@
+[submodule "Libraries/CarbyneSteamContext"]
+	path = Libraries/CarbyneSteamContext
+	url = https://github.com/Nielk1/CarbyneSteamContext.git
