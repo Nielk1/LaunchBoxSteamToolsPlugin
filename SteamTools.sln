@@ -7,13 +7,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamTools", "SteamTools\St
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{AC878CAB-FDE7-43BF-B8A6-16975AB5AA41}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarbyneSteamContext", "Libraries\CarbyneSteamContext\CarbyneSteamContext\CarbyneSteamContext.csproj", "{2B595766-6ECA-432D-8355-0E74BF68A633}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarbyneSteamContext", "..\..\CarbyneMiddleware\CarbyneSteamContext\CarbyneSteamContext\CarbyneSteamContext.csproj", "{2B595766-6ECA-432D-8355-0E74BF68A633}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarbyneSteamContextServer", "Libraries\CarbyneSteamContext\CarbyneSteamContextServer\CarbyneSteamContextServer.csproj", "{4FE956CE-D749-4892-B3B5-4CCC0F091931}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarbyneSteamContextServer", "..\..\CarbyneMiddleware\CarbyneSteamContext\CarbyneSteamContextServer\CarbyneSteamContextServer.csproj", "{4FE956CE-D749-4892-B3B5-4CCC0F091931}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarbyneSteamContextWrapper", "Libraries\CarbyneSteamContext\CarbyneSteamContextWrapper\CarbyneSteamContextWrapper.csproj", "{CD64560E-C24A-47B5-B4ED-AE05AEC1B004}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarbyneSteamContextWrapper", "..\..\CarbyneMiddleware\CarbyneSteamContext\CarbyneSteamContextWrapper\CarbyneSteamContextWrapper.csproj", "{CD64560E-C24A-47B5-B4ED-AE05AEC1B004}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Steam4NET", "..\..\CarbyneMiddleware\CarbyneSteamContext\Libraries\open-steamworks\Steam4NET2\Steam4NET2\Steam4NET.csproj", "{1A204257-FE82-4BBE-9ED4-40694821C31F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Steam4NET", "..\..\CustomForks\open-steamworks\Steam4NET2\Steam4NET2\Steam4NET.csproj", "{1A204257-FE82-4BBE-9ED4-40694821C31F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

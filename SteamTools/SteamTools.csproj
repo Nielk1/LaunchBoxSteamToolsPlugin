@@ -117,20 +117,6 @@
     <None Include="Resources\steam.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\CarbyneMiddleware\CarbyneSteamContext\CarbyneSteamContextWrapper\CarbyneSteamContextWrapper.csproj">
-      <Project>{cd64560e-c24a-47b5-b4ed-ae05aec1b004}</Project>
-      <Name>CarbyneSteamContextWrapper</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\CarbyneMiddleware\CarbyneSteamContext\CarbyneSteamContext\CarbyneSteamContext.csproj">
-      <Project>{2B595766-6ECA-432D-8355-0E74BF68A633}</Project>
-      <Name>CarbyneSteamContext</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\CustomForks\open-steamworks\Steam4NET2\Steam4NET2\Steam4NET.csproj">
-      <Project>{1A204257-FE82-4BBE-9ED4-40694821C31F}</Project>
-      <Name>Steam4NET</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Page Include="GenericPluginProxyView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -139,6 +125,20 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\CarbyneMiddleware\CarbyneSteamContext\CarbyneSteamContextWrapper\CarbyneSteamContextWrapper.csproj">
+      <Project>{cd64560e-c24a-47b5-b4ed-ae05aec1b004}</Project>
+      <Name>CarbyneSteamContextWrapper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\CarbyneMiddleware\CarbyneSteamContext\CarbyneSteamContext\CarbyneSteamContext.csproj">
+      <Project>{2b595766-6eca-432d-8355-0e74bf68a633}</Project>
+      <Name>CarbyneSteamContext</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\CustomForks\open-steamworks\Steam4NET2\Steam4NET2\Steam4NET.csproj">
+      <Project>{1a204257-fe82-4bbe-9ed4-40694821c31f}</Project>
+      <Name>Steam4NET</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
