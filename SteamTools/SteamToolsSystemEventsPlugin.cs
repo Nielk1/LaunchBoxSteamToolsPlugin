@@ -18,7 +18,7 @@ namespace SteamTools
                 case SystemEventTypes.BigBoxStartupCompleted:
                 case SystemEventTypes.LaunchBoxStartupCompleted:
                     {
-                        SteamContext.GetInstance().Init();
+                        SteamContext.GetInstance().Init(ProxyServerPath: "Plugins");
                     }
                     break;
                 case SystemEventTypes.BigBoxShutdownBeginning:

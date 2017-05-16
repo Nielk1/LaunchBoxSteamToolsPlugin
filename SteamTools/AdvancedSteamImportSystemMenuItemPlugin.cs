@@ -25,9 +25,7 @@ namespace SteamTools
         public void OnSelected()
         {
             AdvancedSteamImportDialog Dlg = new AdvancedSteamImportDialog();
-            Dlg.SetPlatforms(PluginHelper.DataManager.GetAllPlatforms());
             Dlg.ShowDialog();
-
         }
 
         public AdvancedSteamImportSystemMenuItemPlugin()

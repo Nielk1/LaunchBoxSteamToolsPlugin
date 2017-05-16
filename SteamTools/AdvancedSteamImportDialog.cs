@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Unbroken.LaunchBox.Plugins.Data;
 using System.IO;
+using Unbroken.LaunchBox.Plugins;
 
 namespace SteamTools
 {
@@ -26,6 +27,9 @@ namespace SteamTools
         //private int clearImageIndex = 0;
         //private Dictionary<string, int> ImageIndexMap = new Dictionary<string, int>();
         private Dictionary<SteamLaunchable, bool> CheckedItems = new Dictionary<SteamLaunchable, bool>();
+        private HashSet<UInt64> IsInstalled = new HashSet<UInt64>();
+        private HashSet<UInt64> KnownSteamGames = new HashSet<UInt64>();
+        private List<Tuple<int, bool>> Sorts = new List<Tuple<int, bool>>();
 
         public AdvancedSteamImportDialog()
         {
@@ -35,9 +39,48 @@ namespace SteamTools
             InitializeComponent();
             this.Icon = ((Icon)(new ComponentResourceManager(typeof(Resources)).GetObject("steam")));
             lvGames.SmallImageList = new ImageList();
+
+            SetPlatforms(PluginHelper.DataManager.GetAllPlatforms());
         }
 
-        internal void SetPlatforms(IPlatform[] platforms)
+        private void ScanLocalGames()
+        {
+            List<IGame> games = PluginHelper.DataManager.GetAllGames().ToList();
+            pbScanLaunchBox.Maximum = games.Count;
+            int index = 0;
+            games.ForEach(game =>
+            {
+                index++;
+                pbScanLaunchBox.Value = index;
+                if (game.ApplicationPath?.StartsWith("steam://") ?? false)
+                {
+                    string GameID = game.ApplicationPath.Split('/').Last();
+                    UInt64 GameIDNumber = 0;
+                    if (UInt64.TryParse(GameID, out GameIDNumber))
+                    {
+                        if (!IsInstalled.Contains(GameIDNumber) && context.IsInstalled(GameIDNumber))
+                        {
+                            IsInstalled.Add(GameIDNumber);
+                        }
+
+                        if (!KnownSteamGames.Contains(GameIDNumber))
+                        {
+                            KnownSteamGames.Add(GameIDNumber);
+                        }
+                    }
+                }
+            });
+        }
+
+        private void btnScanLaunchBox_Click(object sender, EventArgs e)
+        {
+            pbScanLaunchBox.Visible = true;
+            btnScanLaunchBox.Visible = true;
+            ScanLocalGames();
+            btnScan.Enabled = true;
+        }
+
+        private void SetPlatforms(IPlatform[] platforms)
         {
             cbPlatforms.BeginUpdate();
             cbPlatforms.Items.Clear();
@@ -53,7 +96,7 @@ namespace SteamTools
             cbPlatforms.EndUpdate();
         }
 
-        private void btnScan_Click(object sender, EventArgs e)
+        private void ScanSteamGames()
         {
             lvGames.BeginUpdate();
             SteamApps.Clear();
@@ -77,65 +120,137 @@ namespace SteamTools
             //lvGames.VirtualListSize = ListItems.Count;
             lvGames.VirtualListSize = SteamApps.Count;
             lvGames.EndUpdate();
+
+            SortList();
+        }
+
+        private void btnScan_Click(object sender, EventArgs e)
+        {
+            btnImport.Enabled = false;
+            btnScan.Enabled = false;
+            ScanSteamGames();
+            lvGames.Enabled = true;
+            btnScan.Enabled = true;
+            btnImport.Enabled = true;
         }
 
         private void lvGames_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
             SteamLaunchable item = SteamApps[e.ItemIndex];
             if (e.Item == null) e.Item = new ListViewItem(item.Title);
-            e.Item.SubItems.Add(item.GetShortcutID().ToString());
+            UInt64 gameid = item.GetShortcutID();
+            e.Item.SubItems.Add(gameid.ToString());
             e.Item.SubItems.Add(item.AppType);
+            if (IsInstalled.Contains(gameid))
+            {
+                e.Item.SubItems.Add("Y");
+            }
+            else
+            {
+                e.Item.SubItems.Add("N");
+            }
+            if (KnownSteamGames.Contains(gameid))
+            {
+                e.Item.SubItems.Add("Y");
+            }
+            else
+            {
+                e.Item.SubItems.Add("N");
+            }
             if (!string.IsNullOrEmpty(item.Icon) && File.Exists(item.Icon))
             {
-                //if (!ImageIndexMap.ContainsKey(item.Icon))
                 if (!lvGames.SmallImageList.Images.ContainsKey(item.Icon))
                 {
-                    //ImageIndexMap.Add(item.Icon, clearImageIndex++);
-                    //lvGames.SmallImageList.Images.Add(Icon.ExtractAssociatedIcon(item.Icon));
                     lvGames.SmallImageList.Images.Add(item.Icon, Icon.ExtractAssociatedIcon(item.Icon));
                 }
-                //e.Item.ImageIndex = ImageIndexMap[item.Icon];
                 e.Item.ImageKey = item.Icon;
             }
-            //else if (!string.IsNullOrEmpty(item.Icon) && File.Exists(Path.ChangeExtension(item.Icon,".tga")))
-            //{
-            //    //if (!ImageIndexMap.ContainsKey(item.Icon))
-            //    if (!lvGames.SmallImageList.Images.ContainsKey(item.Icon))
-            //    {
-            //        using (var fs = new System.IO.FileStream(Path.ChangeExtension(item.Icon, ".tga"), FileMode.Open, FileAccess.Read, FileShare.Read))
-            //        using (var reader = new System.IO.BinaryReader(fs))
-            //        {
-            //            var tga = new TgaLib.TgaImage(reader);
-            //            System.Windows.Media.Imaging.BitmapSource source = tga.GetBitmap();
-            //            lvGames.SmallImageList.Images.Add(item.Icon, new Icon(source));
-            //        }
-            //    }
-            //    //e.Item.ImageIndex = ImageIndexMap[item.Icon];
-            //    e.Item.ImageKey = item.Icon;
-            //}
             else
             {
                 e.Item.ImageKey = "default";
             }
+
+            
+        }
+
+        private void SortList()
+        {
+            lvGames.BeginUpdate();
+            IQueryable<SteamLaunchable> query = SteamApps.AsQueryable();
+            IOrderedQueryable<SteamLaunchable> query2 = null;
+
+            for (int x = Sorts.Count - 1; x >= 0; x--)
+            {
+                var sorting = Sorts[x];
+                if (x == Sorts.Count - 1)
+                {
+                    switch (sorting.Item1)
+                    {
+                        case 1:
+                            query2 = !sorting.Item2 ? query.OrderBy(dr => dr.GetShortcutID()) : query.OrderByDescending(dr => dr.GetShortcutID());
+                            break;
+                        case 2:
+                            query2 = !sorting.Item2 ? query.OrderBy(dr => dr.AppType) : query.OrderByDescending(dr => dr.AppType);
+                            break;
+                        case 3:
+                            query2 = !sorting.Item2 ? query.OrderBy(dr => IsInstalled.Contains(dr.GetShortcutID()) ? 0 : 1) : query.OrderByDescending(dr => IsInstalled.Contains(dr.GetShortcutID()) ? 0 : 1);
+                            break;
+                        case 4:
+                            query2 = !sorting.Item2 ? query.OrderBy(dr => KnownSteamGames.Contains(dr.GetShortcutID()) ? 0 : 1) : query.OrderByDescending(dr => KnownSteamGames.Contains(dr.GetShortcutID()) ? 0 : 1);
+                            break;
+                        case 0:
+                        default:
+                            query2 = !sorting.Item2 ? query.OrderBy(dr => dr.Title) : query.OrderByDescending(dr => dr.Title);
+                            break;
+                    }
+                }
+                else
+                {
+                    switch (sorting.Item1)
+                    {
+                        case 1:
+                            query2 = !sorting.Item2 ? query2.ThenBy(dr => dr.GetShortcutID()) : query2.ThenByDescending(dr => dr.GetShortcutID());
+                            break;
+                        case 2:
+                            query2 = !sorting.Item2 ? query2.ThenBy(dr => dr.AppType) : query2.ThenByDescending(dr => dr.AppType);
+                            break;
+                        case 3:
+                            query2 = !sorting.Item2 ? query2.ThenBy(dr => IsInstalled.Contains(dr.GetShortcutID()) ? 0 : 1) : query2.ThenByDescending(dr => IsInstalled.Contains(dr.GetShortcutID()) ? 0 : 1);
+                            break;
+                        case 4:
+                            query2 = !sorting.Item2 ? query2.ThenBy(dr => KnownSteamGames.Contains(dr.GetShortcutID()) ? 0 : 1) : query2.ThenByDescending(dr => KnownSteamGames.Contains(dr.GetShortcutID()) ? 0 : 1);
+                            break;
+                        case 0:
+                        default:
+                            query2 = !sorting.Item2 ? query2.ThenBy(dr => dr.Title) : query2.ThenByDescending(dr => dr.Title);
+                            break;
+                    }
+                }
+            }
+
+            SteamApps = (query2 ?? query).ToList();
+            lvGames.EndUpdate();
         }
 
         private void lvGames_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-            lvGames.BeginUpdate();
-            switch(e.Column)
+            if(Sorts.Count > 0)
             {
-                case 1:
-                    SteamApps = SteamApps.OrderBy(dr => dr.GetShortcutID()).ThenBy(dr => dr.Title).ThenBy(dr => dr.AppType).ToList();
-                    break;
-                case 2:
-                    SteamApps = SteamApps.OrderBy(dr => dr.AppType).ThenBy(dr => dr.Title).ToList();
-                    break;
-                case 0:
-                default:
-                    SteamApps = SteamApps.OrderBy(dr => dr.Title).ThenBy(dr => dr.AppType).ToList();
-                    break;
+                // last applied sort is same column
+                if (Sorts.Last().Item1 == e.Column)
+                {
+                    Tuple<int, bool> LastSort = Sorts.Last();
+                    Sorts.Remove(Sorts.Last());
+                    Sorts.Add(new Tuple<int, bool>(LastSort.Item1, !LastSort.Item2));
+                    SortList();
+                    return;
+                }
+                // remove any items earlier in the list that are the same column
+                Sorts.RemoveAll(dr => dr.Item1 == e.Column);
             }
-            lvGames.EndUpdate();
+
+            Sorts.Add(new Tuple<int, bool>(e.Column, false));
+            SortList();
         }
 
         private void lvGames_DrawItem(object sender, DrawListViewItemEventArgs e)

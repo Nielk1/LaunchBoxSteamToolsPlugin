@@ -127,6 +127,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\CarbyneMiddleware\CarbyneSteamContext\CarbyneSteamContextServer\CarbyneSteamContextServer.csproj">
+      <Project>{4fe956ce-d749-4892-b3b5-4ccc0f091931}</Project>
+      <Name>CarbyneSteamContextServer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\CarbyneMiddleware\CarbyneSteamContext\CarbyneSteamContextWrapper\CarbyneSteamContextWrapper.csproj">
       <Project>{cd64560e-c24a-47b5-b4ed-ae05aec1b004}</Project>
       <Name>CarbyneSteamContextWrapper</Name>
