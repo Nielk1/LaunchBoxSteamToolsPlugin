@@ -26,10 +26,25 @@ namespace SteamTools
 
         //private int clearImageIndex = 0;
         //private Dictionary<string, int> ImageIndexMap = new Dictionary<string, int>();
-        private Dictionary<SteamLaunchable, bool> CheckedItems = new Dictionary<SteamLaunchable, bool>();
+        private Dictionary<SteamLaunchable, bool> CheckedItemMap = new Dictionary<SteamLaunchable, bool>();
         private HashSet<UInt64> IsInstalled = new HashSet<UInt64>();
         private HashSet<UInt64> KnownSteamGames = new HashSet<UInt64>();
         private List<Tuple<int, bool>> Sorts = new List<Tuple<int, bool>>();
+
+        public List<SteamLaunchable> CheckedItems
+        {
+            get
+            {
+                return CheckedItemMap.Where(dr => dr.Value).Select(dr => dr.Key).ToList();
+            }
+        }
+        public string SelectedPlatform
+        {
+            get
+            {
+                return (string)(cbPlatforms.SelectedItem);
+            }
+        }
 
         public AdvancedSteamImportDialog()
         {
@@ -50,8 +65,7 @@ namespace SteamTools
             int index = 0;
             games.ForEach(game =>
             {
-                index++;
-                pbScanLaunchBox.Value = index;
+                pbScanLaunchBox.Value = ++index;
                 if (game.ApplicationPath?.StartsWith("steam://") ?? false)
                 {
                     string GameID = game.ApplicationPath.Split('/').Last();
@@ -101,7 +115,7 @@ namespace SteamTools
             lvGames.BeginUpdate();
             SteamApps.Clear();
             lvGames.SmallImageList.Images.Clear();
-            CheckedItems.Clear();
+            CheckedItemMap.Clear();
             //clearImageIndex = 0;
             //ImageIndexMap.Clear();
             //ListItems.Clear();
@@ -278,7 +292,7 @@ namespace SteamTools
                 e.Graphics.DrawRectangle(Pens.Black, rect);
             }
             SteamLaunchable app = SteamApps[e.ItemIndex];
-            if (CheckedItems.ContainsKey(app) && CheckedItems[app])
+            if (CheckedItemMap.ContainsKey(app) && CheckedItemMap[app])
             {
                 Rectangle rect = e.Bounds;
                 rect.Width = 7;
@@ -300,15 +314,15 @@ namespace SteamTools
                     if (lv.SelectedIndices.Contains(lvi.Index))
                     {
                         SteamLaunchable app = SteamApps[lvi.Index];
-                        if (!CheckedItems.ContainsKey(app)) CheckedItems[app] = false;
-                        CheckedItems[app] = !CheckedItems[app];
+                        if (!CheckedItemMap.ContainsKey(app)) CheckedItemMap[app] = false;
+                        CheckedItemMap[app] = !CheckedItemMap[app];
                         if (lv.SelectedIndices.Count > 0)
                         {
                             foreach (int index in lv.SelectedIndices)
                             {
                                 SteamLaunchable appX = SteamApps[index];
-                                if (!CheckedItems.ContainsKey(appX)) CheckedItems[appX] = false;
-                                CheckedItems[appX] = CheckedItems[app];
+                                if (!CheckedItemMap.ContainsKey(appX)) CheckedItemMap[appX] = false;
+                                CheckedItemMap[appX] = CheckedItemMap[app];
                             }
                             lv.Invalidate();
                         }
@@ -316,8 +330,8 @@ namespace SteamTools
                     else
                     {
                         SteamLaunchable app = SteamApps[lvi.Index];
-                        if (!CheckedItems.ContainsKey(app)) CheckedItems[app] = false;
-                        CheckedItems[app] = !CheckedItems[app];
+                        if (!CheckedItemMap.ContainsKey(app)) CheckedItemMap[app] = false;
+                        CheckedItemMap[app] = !CheckedItemMap[app];
                         lv.Invalidate(lvi.Bounds);
                     }
                 }

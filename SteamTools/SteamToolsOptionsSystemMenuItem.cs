@@ -4,13 +4,14 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using Unbroken.LaunchBox.Plugins;
 
 namespace SteamTools
 {
-    class AdvancedSteamImportSystemMenuItemPlugin : ISystemMenuItemPlugin
+    class SteamToolsOptionsSystemMenuItem : ISystemMenuItemPlugin
     {
-        public string Caption => "Advanced Steam Import";
+        public string Caption => "Steam Tools Options";
 
         private System.Drawing.Image _IconImage;
         public Image IconImage => _IconImage;
@@ -21,14 +22,14 @@ namespace SteamTools
 
         public bool AllowInBigBoxWhenLocked => false;
 
+        public string CleanerSystemMenuItems_ParentMenuItem => "optionsToolStripMenuItem";
 
         public void OnSelected()
         {
-            AdvancedSteamImportDialog Dlg = new AdvancedSteamImportDialog();
-            Dlg.ShowDialog();
+            MessageBox.Show("No Options yet in this version");
         }
 
-        public AdvancedSteamImportSystemMenuItemPlugin()
+        public SteamToolsOptionsSystemMenuItem()
         {
             _IconImage = Resources.steam.ToBitmap();
         }

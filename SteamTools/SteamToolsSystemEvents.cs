@@ -9,7 +9,7 @@ using Unbroken.LaunchBox.Plugins.Data;
 
 namespace SteamTools
 {
-    class SteamToolsSystemEventsPlugin : ISystemEventsPlugin
+    class SteamToolsSystemEvents : ISystemEventsPlugin
     {
         public void OnEventRaised(string eventType)
         {
@@ -17,15 +17,11 @@ namespace SteamTools
             {
                 case SystemEventTypes.BigBoxStartupCompleted:
                 case SystemEventTypes.LaunchBoxStartupCompleted:
-                    {
-                        SteamContext.GetInstance().Init(ProxyServerPath: "Plugins");
-                    }
+                    SteamToolsContext.Init();
                     break;
                 case SystemEventTypes.BigBoxShutdownBeginning:
                 case SystemEventTypes.LaunchBoxShutdownBeginning:
-                    {
-                        SteamContext.GetInstance().Shutdown();
-                    }
+                    SteamToolsContext.Shutdown();
                     break;
             }
         }

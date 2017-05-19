@@ -69,6 +69,7 @@
             // 
             this.btnImport.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnImport.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnImport.Enabled = false;
             this.btnImport.Location = new System.Drawing.Point(12, 479);
             this.btnImport.Name = "btnImport";

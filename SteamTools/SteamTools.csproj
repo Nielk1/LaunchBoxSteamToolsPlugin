@@ -52,6 +52,9 @@
       <HintPath>..\..\..\..\..\Program Files\LaunchBox\BigBox.exe</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="LaunchBox">
+      <HintPath>..\..\..\..\..\Program Files\LaunchBox\LaunchBox.exe</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -86,7 +89,7 @@
     <Compile Include="AdvancedSteamImportDialog.Designer.cs">
       <DependentUpon>AdvancedSteamImportDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="AdvancedSteamImportSystemMenuItemPlugin.cs" />
+    <Compile Include="AdvancedSteamImportSystemMenuItem.cs" />
     <Compile Include="GenericPluginProxyView.xaml.cs">
       <DependentUpon>GenericPluginProxyView.xaml</DependentUpon>
     </Compile>
@@ -98,10 +101,12 @@
     <Compile Include="SelectSteamInstallLocationView.xaml.cs">
       <DependentUpon>SelectSteamInstallLocationView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SteamInstallGameMenuItemPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SteamToolsBigBoxThemeElementPlugin.cs" />
-    <Compile Include="SteamToolsSystemEventsPlugin.cs" />
+    <Compile Include="SteamInstallGameMenuItem.cs" />
+    <Compile Include="SteamToolsContext.cs" />
+    <Compile Include="SteamToolsDataBigBoxElement.cs" />
+    <Compile Include="SteamToolsSystemEvents.cs" />
+    <Compile Include="SteamToolsOptionsSystemMenuItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AdvancedSteamImportDialog.resx">

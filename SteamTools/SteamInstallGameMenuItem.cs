@@ -10,7 +10,7 @@ using Unbroken.LaunchBox.Plugins.Data;
 
 namespace SteamTools
 {
-    public class SteamInstallGameMenuItemPlugin : IGameMenuItemPlugin
+    public class SteamInstallGameMenuItem : IGameMenuItemPlugin
     {
         // is this the DLL that can cause some minor oddities?
         [DllImport("user32.dll")]
@@ -62,21 +62,21 @@ namespace SteamTools
             }
         }
 
-        public SteamInstallGameMenuItemPlugin()
+        public SteamInstallGameMenuItem()
         {
             _IconImage = Resources.steam.ToBitmap();
         }
 
         public bool GetIsValidForGame(IGame selectedGame)
         {
-            if(selectedGame.ApplicationPath?.StartsWith("steam://") ?? false)
+            if(SteamToolsContext.IsSteamGame(selectedGame))
             {
-                string GameID = selectedGame.ApplicationPath.Split('/').Last();
-                UInt64 GameIDNumber = 0;
-                if (UInt64.TryParse(GameID, out GameIDNumber))
+                UInt64? GameIDNumber = SteamToolsContext.GetSteamGameID(selectedGame);
+                if (GameIDNumber.HasValue)
                 {
                     SteamContext context = SteamContext.GetInstance();
-                    if (!context.IsInstalled(GameIDNumber))
+                    bool? l_IsInstalled = SteamToolsContext.IsInstalled(GameIDNumber.Value);
+                    if (l_IsInstalled.HasValue && !l_IsInstalled.Value)
                     {
                         return true;
                     }
@@ -97,17 +97,14 @@ namespace SteamTools
 
         public void OnSelected(IGame selectedGame)
         {
-            string GameID = selectedGame.ApplicationPath.Split('/').Last();
-            UInt64 GameIDNumber = 0;
-            if (UInt64.TryParse(GameID, out GameIDNumber))
+            UInt64? GameIDNumber = SteamToolsContext.GetSteamGameID(selectedGame);
+            if (GameIDNumber.HasValue)
             {
-                SteamContext context = SteamContext.GetInstance();
-
                 bool handled = false;
 
                 if (IsBigBox)
                 {
-                    BigBoxLogic(ref handled, context, GameIDNumber);
+                    BigBoxLogic(ref handled, GameIDNumber.Value);
                 }
 
                 if (!handled)
@@ -115,12 +112,12 @@ namespace SteamTools
                     if(AreWeBigBoxGuess)
                     {
                         // Start BigPicture first?
-                        InstallWithSteamDialog(context, GameIDNumber);
+                        InstallWithSteamDialog(GameIDNumber.Value);
                     }
                     else
                     {
                         // If we're in BigPicture this will just transparently install, we need to close BigPicture?
-                        InstallWithSteamDialog(context, GameIDNumber);
+                        InstallWithSteamDialog(GameIDNumber.Value);
                     }
                 }
             }
@@ -129,11 +126,11 @@ namespace SteamTools
         // If this function is called without Caliburn.Micro it will crash.  BigBox loads Caliburn.Micro
         // Encapsilating this logic into a function seems to keep .net happy
         // It must be some form of JIT assembly loading
-        private void BigBoxLogic(ref bool handled, SteamContext context, UInt64 GameIDNumber)
+        private void BigBoxLogic(ref bool handled, UInt64 GameIDNumber)
         {
             try
             {
-                string[] libs = context.GetGameLibraries();
+                string[] libs = SteamToolsContext.GetGameLibraries();
                 if (libs.Length > 0)
                 {
                     // The ActiveView is just a small area of the UI sadly, but it has the plugin interface active
@@ -164,7 +161,7 @@ namespace SteamTools
                                 {
                                     try
                                     {
-                                        context.InstallGame(GameIDNumber, index);
+                                        SteamToolsContext.InstallGame(GameIDNumber, index);
                                     }
                                     catch
                                     {
@@ -189,9 +186,9 @@ namespace SteamTools
             catch { }
         }
 
-        private void InstallWithSteamDialog(SteamContext context, UInt64 GameIDNumber)
+        private void InstallWithSteamDialog(UInt64 GameIDNumber)
         {
-            context.InstallGame(GameIDNumber);
+            SteamToolsContext.InstallGame(GameIDNumber);
             try
             {
                 Process steam = SteamContext.GetInstance().GetSteamProcess();
