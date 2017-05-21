@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SteamTools</RootNamespace>
-    <AssemblyName>SteamTools</AssemblyName>
+    <AssemblyName>SteamTools.Core</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -52,12 +52,13 @@
       <HintPath>..\..\..\..\..\Program Files\LaunchBox\BigBox.exe</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Caliburn.Micro">
+      <HintPath>..\..\..\..\..\Program Files\LaunchBox\Themes\Default\References\Caliburn.Micro.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="LaunchBox">
       <HintPath>..\..\..\..\..\Program Files\LaunchBox\LaunchBox.exe</HintPath>
       <Private>False</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -73,6 +74,10 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="UIAutomationProvider" />
+    <Reference Include="Unbroken.LaunchBox">
+      <HintPath>..\..\..\..\..\Program Files\LaunchBox\Metadata\Unbroken.LaunchBox.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Unbroken.LaunchBox.Plugins">
       <HintPath>..\..\..\..\..\Program Files\LaunchBox\Metadata\Unbroken.LaunchBox.Plugins.dll</HintPath>
       <Private>False</Private>
@@ -105,7 +110,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SteamInstallGameMenuItem.cs" />
     <Compile Include="SteamToolsContext.cs" />
-    <Compile Include="SteamToolsDataBigBoxElement.cs" />
+    <Compile Include="SteamToolsOptions.cs" />
+    <Compile Include="SteamToolsOptionsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SteamToolsOptionsDialog.Designer.cs">
+      <DependentUpon>SteamToolsOptionsDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="SteamToolsSystemEvents.cs" />
     <Compile Include="SteamToolsOptionsSystemMenuItem.cs" />
   </ItemGroup>
@@ -117,9 +128,11 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="SteamToolsOptionsDialog.resx">
+      <DependentUpon>SteamToolsOptionsDialog.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="Resources\steam.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -133,21 +146,25 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\CarbyneMiddleware\CarbyneSteamContext\CarbyneSteamContextServer\CarbyneSteamContextServer.csproj">
+    <ProjectReference Include="..\..\CarbyneSteamContext\CarbyneSteamContextServer\CarbyneSteamContextServer.csproj">
       <Project>{4fe956ce-d749-4892-b3b5-4ccc0f091931}</Project>
       <Name>CarbyneSteamContextServer</Name>
+      <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\CarbyneMiddleware\CarbyneSteamContext\CarbyneSteamContextWrapper\CarbyneSteamContextWrapper.csproj">
+    <ProjectReference Include="..\..\CarbyneSteamContext\CarbyneSteamContextWrapper\CarbyneSteamContextWrapper.csproj">
       <Project>{cd64560e-c24a-47b5-b4ed-ae05aec1b004}</Project>
       <Name>CarbyneSteamContextWrapper</Name>
+      <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\CarbyneMiddleware\CarbyneSteamContext\CarbyneSteamContext\CarbyneSteamContext.csproj">
+    <ProjectReference Include="..\..\CarbyneSteamContext\CarbyneSteamContext\CarbyneSteamContext.csproj">
       <Project>{2b595766-6eca-432d-8355-0e74bf68a633}</Project>
       <Name>CarbyneSteamContext</Name>
+      <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\CustomForks\open-steamworks\Steam4NET2\Steam4NET2\Steam4NET.csproj">
+    <ProjectReference Include="..\..\open-steamworks\Steam4NET2\Steam4NET2\Steam4NET.csproj">
       <Project>{1a204257-fe82-4bbe-9ed4-40694821c31f}</Project>
       <Name>Steam4NET</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

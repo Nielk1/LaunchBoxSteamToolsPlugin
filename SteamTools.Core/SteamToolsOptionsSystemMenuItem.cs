@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using Unbroken.LaunchBox.Plugins;
 
 namespace SteamTools
@@ -26,8 +27,22 @@ namespace SteamTools
 
         public void OnSelected()
         {
-            MessageBox.Show("No Options yet in this version");
+            SteamToolsOptionsDialog dlg = new SteamToolsOptionsDialog();
+
+            dlg.PollingSteamRate = SteamToolsOptions.PollingSteamRate;
+            dlg.ShowInstalled = SteamToolsOptions.ShowInstalled;
+            dlg.HideUninstalled = SteamToolsOptions.HideUninstalled;
+
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                SteamToolsOptions.PollingSteamRate = dlg.PollingSteamRate;
+                SteamToolsOptions.ShowInstalled = dlg.ShowInstalled;
+                SteamToolsOptions.HideUninstalled = dlg.HideUninstalled;
+
+                SteamToolsOptions.SaveConfig();
+            }
         }
+        
 
         public SteamToolsOptionsSystemMenuItem()
         {

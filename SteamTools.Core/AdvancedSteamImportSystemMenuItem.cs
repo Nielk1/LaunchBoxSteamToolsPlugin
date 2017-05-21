@@ -31,6 +31,7 @@ namespace SteamTools
             AdvancedSteamImportDialog Dlg = new AdvancedSteamImportDialog();
             if (Dlg.ShowDialog() == DialogResult.OK)
             {
+                DateTime Now = DateTime.Now;
                 List<SteamLaunchable> SteamGames = Dlg.CheckedItems;
                 if (SteamGames.Count > 0)
                 {
@@ -39,7 +40,10 @@ namespace SteamTools
                         IGame game = PluginHelper.DataManager.AddNewGame(steamGame.Title);
                         game.ApplicationPath = $@"steam://rungameid/{steamGame.GetShortcutID()}";
                         game.Platform = Dlg.SelectedPlatform;
-                        game.Status = "Imported from Steam with SteamTools";
+                        game.Status = "Imported from Steam with Steam Tools";
+                        game.Source = "Steam Tools";
+                        game.DateAdded = Now;
+                        game.DateModified = Now;
                     });
                     PluginHelper.DataManager.Save();
                 }

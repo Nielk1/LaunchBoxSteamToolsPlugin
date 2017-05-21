@@ -48,9 +48,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cbPlatforms.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbPlatforms.FormattingEnabled = true;
-            this.cbPlatforms.Location = new System.Drawing.Point(97, 452);
+            this.cbPlatforms.Location = new System.Drawing.Point(97, 424);
             this.cbPlatforms.Name = "cbPlatforms";
-            this.cbPlatforms.Size = new System.Drawing.Size(500, 21);
+            this.cbPlatforms.Size = new System.Drawing.Size(543, 21);
             this.cbPlatforms.Sorted = true;
             this.cbPlatforms.TabIndex = 0;
             // 
@@ -59,7 +59,7 @@
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 455);
+            this.label1.Location = new System.Drawing.Point(12, 427);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(79, 13);
             this.label1.TabIndex = 1;
@@ -71,9 +71,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnImport.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnImport.Enabled = false;
-            this.btnImport.Location = new System.Drawing.Point(12, 479);
+            this.btnImport.Location = new System.Drawing.Point(12, 451);
             this.btnImport.Name = "btnImport";
-            this.btnImport.Size = new System.Drawing.Size(585, 23);
+            this.btnImport.Size = new System.Drawing.Size(628, 23);
             this.btnImport.TabIndex = 2;
             this.btnImport.Text = "Import";
             this.btnImport.UseVisualStyleBackColor = true;
@@ -85,7 +85,7 @@
             this.btnScan.Enabled = false;
             this.btnScan.Location = new System.Drawing.Point(12, 41);
             this.btnScan.Name = "btnScan";
-            this.btnScan.Size = new System.Drawing.Size(585, 23);
+            this.btnScan.Size = new System.Drawing.Size(628, 23);
             this.btnScan.TabIndex = 3;
             this.btnScan.Text = "Scan Steam";
             this.btnScan.UseVisualStyleBackColor = true;
@@ -109,7 +109,7 @@
             this.lvGames.Location = new System.Drawing.Point(12, 70);
             this.lvGames.Name = "lvGames";
             this.lvGames.OwnerDraw = true;
-            this.lvGames.Size = new System.Drawing.Size(585, 376);
+            this.lvGames.Size = new System.Drawing.Size(628, 348);
             this.lvGames.TabIndex = 4;
             this.lvGames.UseCompatibleStateImageBehavior = false;
             this.lvGames.View = System.Windows.Forms.View.Details;
@@ -151,7 +151,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnScanLaunchBox.Location = new System.Drawing.Point(12, 12);
             this.btnScanLaunchBox.Name = "btnScanLaunchBox";
-            this.btnScanLaunchBox.Size = new System.Drawing.Size(585, 23);
+            this.btnScanLaunchBox.Size = new System.Drawing.Size(628, 23);
             this.btnScanLaunchBox.TabIndex = 5;
             this.btnScanLaunchBox.Text = "Scan LaunchBox Games";
             this.btnScanLaunchBox.UseVisualStyleBackColor = true;
@@ -163,7 +163,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pbScanLaunchBox.Location = new System.Drawing.Point(12, 12);
             this.pbScanLaunchBox.Name = "pbScanLaunchBox";
-            this.pbScanLaunchBox.Size = new System.Drawing.Size(585, 23);
+            this.pbScanLaunchBox.Size = new System.Drawing.Size(628, 23);
             this.pbScanLaunchBox.TabIndex = 6;
             this.pbScanLaunchBox.Visible = false;
             // 
@@ -171,7 +171,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(609, 514);
+            this.ClientSize = new System.Drawing.Size(652, 486);
             this.Controls.Add(this.pbScanLaunchBox);
             this.Controls.Add(this.btnScanLaunchBox);
             this.Controls.Add(this.lvGames);
@@ -181,7 +181,9 @@
             this.Controls.Add(this.cbPlatforms);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(668, 524);
             this.Name = "AdvancedSteamImportDialog";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Advanced Steam Import";
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -1,5 +1,4 @@
-﻿using CarbyneSteamContextWrapper;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +13,13 @@ namespace SteamTools
 {
     public class SteamToolsDataBigBoxElement : Panel, IBigBoxThemeElementPlugin
     {
+        public static readonly DependencyProperty IsSteamToolsLoadedProperty = DependencyProperty.Register("IsSteamToolsLoaded", typeof(Boolean), typeof(SteamToolsDataBigBoxElement));
+        public bool IsSteamToolsLoaded
+        {
+            get { return (bool)GetValue(IsSteamToolsLoadedProperty); }
+            set { SetValue(IsSteamToolsLoadedProperty, value); }
+        }
+
         public static readonly DependencyProperty IsSteamGameProperty = DependencyProperty.Register("IsSteamGame", typeof(Boolean?), typeof(SteamToolsDataBigBoxElement));
         public bool? IsSteamGame
         {
@@ -82,16 +88,16 @@ namespace SteamTools
         private void UpdateSelected(object data)
         {
             UpdateSelectionData data2 = (UpdateSelectionData)data;
-            if (SteamToolsContext.IsSteamGame(data2.game))
+            if (SteamToolsBigBoxContext.IsSteamGame(data2.game) ?? false)
             {
                 SetIsSteamGameSafely(true, data2.cts);
 
-                UInt64? GameIDNumber = SteamToolsContext.GetSteamGameID(data2.game);
+                UInt64? GameIDNumber = SteamToolsBigBoxContext.GetSteamGameID(data2.game);
                 if (GameIDNumber.HasValue)
                 {
                     if (data2.cts.IsCancellationRequested) return;
 
-                    bool? l_IsInstalled = SteamToolsContext.IsInstalled(GameIDNumber.Value);
+                    bool? l_IsInstalled = SteamToolsBigBoxContext.IsInstalled(GameIDNumber.Value, data2.game);
                     if (l_IsInstalled.HasValue)
                     {
                         if (l_IsInstalled.Value)

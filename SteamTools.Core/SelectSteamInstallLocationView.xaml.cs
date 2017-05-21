@@ -29,14 +29,6 @@ namespace SteamTools
     /// </summary>
     public partial class SelectSteamInstallLocationView : UserControl, IBigBoxThemeElementPlugin
     {
-        //private delegate void a(SelectSteamInstallLocationView);
-
-        //private delegate void b(SelectSteamInstallLocationView, int connectionId, object target);
-
-        //internal ListBox Items;
-
-        //private bool _contentLoaded;
-
         public bool Accepted { get; set; }
 
         public SelectSteamInstallLocationView()
@@ -52,8 +44,19 @@ namespace SteamTools
             {
                 int currentIndex = Items.SelectedIndex;
                 currentIndex--;
-                if (currentIndex < 0) currentIndex = Items.Items.Count - 1;
+                if (currentIndex < 0)
+                {
+                    if (held)
+                    {
+                        currentIndex = 0;
+                    }
+                    else
+                    {
+                        currentIndex = Items.Items.Count - 1;
+                    }
+                }
                 Items.SelectedIndex = currentIndex;
+                Items.ScrollIntoView(Items.SelectedItem);
                 return true;
             }
             return false;
@@ -63,8 +66,19 @@ namespace SteamTools
             {
                 int currentIndex = Items.SelectedIndex;
                 currentIndex++;
-                if (currentIndex >= Items.Items.Count) currentIndex = 0;
+                if (currentIndex >= Items.Items.Count)
+                {
+                    if (held)
+                    {
+                        currentIndex = Items.Items.Count - 1;
+                    }
+                    else
+                    {
+                        currentIndex = 0;
+                    }
+                }
                 Items.SelectedIndex = currentIndex;
+                Items.ScrollIntoView(Items.SelectedItem);
                 return true;
             }
             return false;
@@ -108,6 +122,21 @@ namespace SteamTools
             foreach (string lib in libs)
             {
                 Items.Items.Add(lib);
+            }
+            Items.SelectedIndex = -1;
+        }
+
+        public void SetHeader(string name)
+        {
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                HeaderText.Text = name;
+                HeaderText.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                HeaderText.Visibility = Visibility.Collapsed;
+                HeaderText.Text = null;
             }
         }
 

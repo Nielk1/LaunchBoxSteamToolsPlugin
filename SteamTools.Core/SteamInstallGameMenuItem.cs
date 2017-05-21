@@ -20,7 +20,15 @@ namespace SteamTools
         [DllImport("USER32.DLL")]
         public static extern bool SetForegroundWindow(IntPtr hWnd);
 
+        /// <summary>
+        /// List of Steam's word "Install" in differnt languages to try to find the install window
+        /// </summary>
         private static readonly string[] InstallStrings = new string[] { "Install" };
+
+        /// <summary>
+        /// List of Steam's word "Install" in differnt languages to try to find the install window RTL
+        /// </summary>
+        private static readonly string[] InstallStringsEnd = new string[] { };
 
         private bool IsBigBox { get { return AreWeBigBoxGuess; } }
         private bool AreWeBigBoxGuess = false;
@@ -75,7 +83,7 @@ namespace SteamTools
                 if (GameIDNumber.HasValue)
                 {
                     SteamContext context = SteamContext.GetInstance();
-                    bool? l_IsInstalled = SteamToolsContext.IsInstalled(GameIDNumber.Value);
+                    bool? l_IsInstalled = SteamToolsContext.IsInstalled(GameIDNumber.Value, selectedGame);
                     if (l_IsInstalled.HasValue && !l_IsInstalled.Value)
                     {
                         return true;
@@ -138,13 +146,15 @@ namespace SteamTools
                     System.Windows.Controls.Panel ActiveViewContent = (System.Windows.Controls.Panel)(ActiveView.Content);
 
                     // The entire window view, sadly the plugin interface doesn't work here
-                    Unbroken.LaunchBox.Wpf.BigBox.Views.MainView MainView = (Unbroken.LaunchBox.Wpf.BigBox.Views.MainView)(Unbroken.LaunchBox.Wpf.BigBox.App.MainView);
+                    //Unbroken.LaunchBox.Wpf.BigBox.Views.MainView MainView = (Unbroken.LaunchBox.Wpf.BigBox.Views.MainView)(Unbroken.LaunchBox.Wpf.BigBox.App.MainView);
+                    Window MainView = Unbroken.LaunchBox.Wpf.BigBox.App.MainView;
                     System.Windows.Controls.Panel MainViewContent = (System.Windows.Controls.Panel)(MainView.Content);
 
                     GenericPluginProxyView InstallLocationSelectorProxy = new GenericPluginProxyView();
                     SelectSteamInstallLocationView InstallLocationSelector = new SelectSteamInstallLocationView();
                     InstallLocationSelectorProxy.Proxy = InstallLocationSelector;
                     InstallLocationSelector.SetLibraries(libs);
+                    InstallLocationSelector.SetHeader("Select Steam Library");
 
                     ActiveViewContent.Children.Add(InstallLocationSelectorProxy);
                     MainViewContent.Children.Add(InstallLocationSelector);
@@ -162,6 +172,23 @@ namespace SteamTools
                                     try
                                     {
                                         SteamToolsContext.InstallGame(GameIDNumber, index);
+
+                                        try
+                                        {
+                                            Unbroken.LaunchBox.Wpf.BigBox.ViewModels.TextGamesViewModel ActiveViewModel = Unbroken.LaunchBox.Wpf.BigBox.App.MainViewModel.ActiveViewModel as Unbroken.LaunchBox.Wpf.BigBox.ViewModels.TextGamesViewModel;
+                                            if (ActiveViewModel != null)
+                                            {
+                                                ActiveViewModel.RefreshGame();
+                                            }
+                                            else
+                                            {
+                                                // show a popup telling the user they must maually reload the page
+                                            }
+                                        }
+                                        catch(Exception ex5)
+                                        {
+                                            // show a popup telling the user they must maually reload the page
+                                        }
                                     }
                                     catch
                                     {
@@ -198,7 +225,8 @@ namespace SteamTools
 
                 // try to get the install window
                 int Timeout = 0;
-                while (!InstallStrings.Any(name => InstallWindowTitle.StartsWith(name + @" - ")))
+                while ( !InstallStrings.Any(name => InstallWindowTitle.StartsWith(name + @" - "))
+                     && !InstallStringsEnd.Any(name => InstallWindowTitle.EndsWith(@" - " + name)))
                 {
                     if (Timeout > 10 * 5)
                         break;
@@ -211,7 +239,8 @@ namespace SteamTools
                 }
 
                 // if we found the install window
-                if (InstallStrings.Any(name => InstallWindowTitle.StartsWith(name + @" - ")))
+                if ( InstallStrings.Any(name => InstallWindowTitle.StartsWith(name + @" - "))
+                  || InstallStringsEnd.Any(name => InstallWindowTitle.EndsWith(@" - "  + name)))
                 {
                     while (IsWindow(InstallWindow))
                     {
@@ -222,8 +251,6 @@ namespace SteamTools
                 }
             }
             catch { }
-
-            // TODO refresh the BigBox window somehow if possible as the states of flags are now wrong
         }
     }
 }
