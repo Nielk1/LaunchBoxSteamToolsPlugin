@@ -6,6 +6,8 @@ using System.Threading;
 using System.Windows.Forms;
 using Unbroken.LaunchBox.Plugins;
 using System.IO;
+using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace SteamTools
 {
@@ -15,6 +17,37 @@ namespace SteamTools
         private static SteamContext context;
         private static CancellationTokenSource SteamSentinalToken;
         private static Thread SteamSentinalThread;
+
+        internal static void Remap()
+        {
+            AppDomain.CurrentDomain.AssemblyResolve += ResolveThirdPartyLibrary;
+        }
+
+        private static Assembly ResolveThirdPartyLibrary(object sender, ResolveEventArgs args)
+        {
+            // Check that CLR is loading the version of ThirdPartyLibrary referenced by MyLibrary
+            /*if (args.Name.Equals("BigBox, Version=7.10.0.7, Culture=neutral, PublicKeyToken=97d6238f04304129"))
+            {
+                try
+                {
+                    // Load from application's base directory. Alternative logic might be needed if you need to 
+                    // load from GAC etc. However, note that calling certain overloads of Assembly.Load will result
+                    // in the AssemblyResolve event from firing recursively - see recommendations in
+                    // http://msdn.microsoft.com/en-us/library/ff527268.aspx for further info
+                    var assembly = Assembly.LoadFrom("BigBox.exe");
+                    return assembly;
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception);
+                }
+            }*/
+            if (Regex.IsMatch(args.Name, @"BigBox, Version=[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+, Culture=neutral, PublicKeyToken=97d6238f04304129")) { return Assembly.LoadFrom("BigBox.exe"); }
+            if (Regex.IsMatch(args.Name, @"LaunchBox, Version=[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+, Culture=neutral, PublicKeyToken=97d6238f04304129")) { return Assembly.LoadFrom("LaunchBox.exe"); }
+            if (Regex.IsMatch(args.Name, @"Unbroken.LaunchBox, Version=[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+, Culture=neutral, PublicKeyToken=97d6238f04304129")) { return Assembly.LoadFrom("Unbroken.LaunchBox.dll"); }
+            if (Regex.IsMatch(args.Name, @"Unbroken.LaunchBox.Wpf, Version=[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+, Culture=neutral, PublicKeyToken=97d6238f04304129")) { return Assembly.LoadFrom("Unbroken.LaunchBox.Wpf.dll"); }
+            return null;
+        }
 
         /// <summary>
         /// Not for use by anything but the Steam context connector, use (context?.SteamIsRunning ?? false)
@@ -132,6 +165,7 @@ namespace SteamTools
                                 if (GameID.HasValue)
                                 {
                                     bool? _isInstalled = null;
+                                    //Thread.Sleep(1000);
                                     lock (contextLock)
                                     {
                                         _isInstalled = context?.IsInstalled(GameID.Value);

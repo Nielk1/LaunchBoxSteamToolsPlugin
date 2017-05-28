@@ -30,45 +30,16 @@ namespace SteamTools
         /// </summary>
         private static readonly string[] InstallStringsEnd = new string[] { };
 
-        private bool IsBigBox { get { return AreWeBigBoxGuess; } }
-        private bool AreWeBigBoxGuess = false;
-
         public string Caption { get { return "Install with Steam"; } }
 
         private System.Drawing.Image _IconImage;
-        public System.Drawing.Image IconImage
-        {
-            get
-            {
-                return _IconImage;
-            }
-        }
+        public System.Drawing.Image IconImage { get { return _IconImage; } }
 
-        public bool ShowInBigBox
-        {
-            get
-            {
-                AreWeBigBoxGuess = true;
-                return true;
-            }
-        }
+        public bool ShowInBigBox { get { return true; } }
 
-        public bool ShowInLaunchBox
-        {
-            get
-            {
-                AreWeBigBoxGuess = false;
-                return true;
-            }
-        }
+        public bool ShowInLaunchBox { get { return true; } }
 
-        public bool SupportsMultipleGames
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool SupportsMultipleGames { get { return false; } }
 
         public SteamInstallGameMenuItem()
         {
@@ -110,14 +81,14 @@ namespace SteamTools
             {
                 bool handled = false;
 
-                if (IsBigBox)
+                if (PluginHelper.StateManager.IsBigBox)
                 {
                     BigBoxLogic(ref handled, GameIDNumber.Value);
                 }
 
                 if (!handled)
                 {
-                    if(AreWeBigBoxGuess)
+                    if(PluginHelper.StateManager.IsBigBox)
                     {
                         // Start BigPicture first?
                         InstallWithSteamDialog(GameIDNumber.Value);

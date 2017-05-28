@@ -60,26 +60,33 @@ namespace SteamTools
 
         private void ScanLocalGames()
         {
-            List<IGame> games = PluginHelper.DataManager.GetAllGames().ToList();
+            List<IGame> games = new List<IGame>();
+            foreach (ListViewItem item in lvPlatforms.Items)
+            {
+                if (item.Checked)
+                {
+                    games.AddRange(PluginHelper.DataManager.GetPlatformByName(item.Text).GetAllGames(true, true));
+                }
+            }
+            //List<IGame> games = PluginHelper.DataManager.GetAllGames().ToList();
             pbScanLaunchBox.Maximum = games.Count;
             int index = 0;
             games.ForEach(game =>
             {
                 pbScanLaunchBox.Value = ++index;
-                if (game.ApplicationPath?.StartsWith("steam://") ?? false)
+                if (SteamToolsContext.IsSteamGame(game))
                 {
-                    string GameID = game.ApplicationPath.Split('/').Last();
-                    UInt64 GameIDNumber = 0;
-                    if (UInt64.TryParse(GameID, out GameIDNumber))
+                    UInt64? GameIDNumber = SteamToolsContext.GetSteamGameID(game);
+                    if (GameIDNumber.HasValue)
                     {
-                        if (!IsInstalled.Contains(GameIDNumber) && context.IsInstalled(GameIDNumber))
+                        if(!IsInstalled.Contains(GameIDNumber.Value) && (SteamToolsContext.IsInstalled(GameIDNumber.Value, game) ?? false))
                         {
-                            IsInstalled.Add(GameIDNumber);
+                            IsInstalled.Add(GameIDNumber.Value);
                         }
 
-                        if (!KnownSteamGames.Contains(GameIDNumber))
+                        if (!KnownSteamGames.Contains(GameIDNumber.Value))
                         {
-                            KnownSteamGames.Add(GameIDNumber);
+                            KnownSteamGames.Add(GameIDNumber.Value);
                         }
                     }
                 }
@@ -88,19 +95,24 @@ namespace SteamTools
 
         private void btnScanLaunchBox_Click(object sender, EventArgs e)
         {
-            pbScanLaunchBox.Visible = true;
-            btnScanLaunchBox.Visible = true;
+            lvPlatforms.Enabled = false;
+            //pbScanLaunchBox.Visible = true;
+            //btnScanLaunchBox.Visible = true;
             ScanLocalGames();
+            lvPlatforms.Enabled = true;
             btnScan.Enabled = true;
         }
 
         private void SetPlatforms(IPlatform[] platforms)
         {
             cbPlatforms.BeginUpdate();
+            lvPlatforms.BeginUpdate();
             cbPlatforms.Items.Clear();
+            lvPlatforms.Items.Clear();
             foreach (IPlatform plat in platforms)
             {
                 cbPlatforms.Items.Add(plat.Name);
+                lvPlatforms.Items.Add(plat.Name);
             }
             cbPlatforms.SelectedItem = "Steam";
             if(cbPlatforms.SelectedIndex == -1)
@@ -108,6 +120,7 @@ namespace SteamTools
             if (cbPlatforms.SelectedIndex == -1)
                 cbPlatforms.SelectedIndex = 0;
             cbPlatforms.EndUpdate();
+            lvPlatforms.EndUpdate();
         }
 
         private void ScanSteamGames()
@@ -354,6 +367,19 @@ namespace SteamTools
         private void lvGames_DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
         {
             e.DrawDefault = true;
+        }
+
+        private void lvPlatforms_ItemChecked(object sender, ItemCheckedEventArgs e)
+        {
+            btnScanLaunchBox.Enabled = false;
+            foreach(ListViewItem item in lvPlatforms.Items)
+            {
+                if(item != null && item.Checked)
+                {
+                    btnScanLaunchBox.Enabled = true;
+                    break;
+                }
+            }
         }
     }
 

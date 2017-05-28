@@ -40,6 +40,7 @@
             this.chLibrary = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btnScanLaunchBox = new System.Windows.Forms.Button();
             this.pbScanLaunchBox = new System.Windows.Forms.ProgressBar();
+            this.lvPlatforms = new System.Windows.Forms.ListView();
             this.SuspendLayout();
             // 
             // cbPlatforms
@@ -48,7 +49,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cbPlatforms.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbPlatforms.FormattingEnabled = true;
-            this.cbPlatforms.Location = new System.Drawing.Point(97, 424);
+            this.cbPlatforms.Location = new System.Drawing.Point(97, 508);
             this.cbPlatforms.Name = "cbPlatforms";
             this.cbPlatforms.Size = new System.Drawing.Size(543, 21);
             this.cbPlatforms.Sorted = true;
@@ -59,7 +60,7 @@
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 427);
+            this.label1.Location = new System.Drawing.Point(12, 511);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(79, 13);
             this.label1.TabIndex = 1;
@@ -71,7 +72,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnImport.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnImport.Enabled = false;
-            this.btnImport.Location = new System.Drawing.Point(12, 451);
+            this.btnImport.Location = new System.Drawing.Point(12, 535);
             this.btnImport.Name = "btnImport";
             this.btnImport.Size = new System.Drawing.Size(628, 23);
             this.btnImport.TabIndex = 2;
@@ -83,7 +84,7 @@
             this.btnScan.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnScan.Enabled = false;
-            this.btnScan.Location = new System.Drawing.Point(12, 41);
+            this.btnScan.Location = new System.Drawing.Point(12, 151);
             this.btnScan.Name = "btnScan";
             this.btnScan.Size = new System.Drawing.Size(628, 23);
             this.btnScan.TabIndex = 3;
@@ -106,10 +107,10 @@
             this.lvGames.Enabled = false;
             this.lvGames.FullRowSelect = true;
             this.lvGames.GridLines = true;
-            this.lvGames.Location = new System.Drawing.Point(12, 70);
+            this.lvGames.Location = new System.Drawing.Point(12, 180);
             this.lvGames.Name = "lvGames";
             this.lvGames.OwnerDraw = true;
-            this.lvGames.Size = new System.Drawing.Size(628, 348);
+            this.lvGames.Size = new System.Drawing.Size(628, 322);
             this.lvGames.TabIndex = 4;
             this.lvGames.UseCompatibleStateImageBehavior = false;
             this.lvGames.View = System.Windows.Forms.View.Details;
@@ -149,7 +150,8 @@
             // 
             this.btnScanLaunchBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnScanLaunchBox.Location = new System.Drawing.Point(12, 12);
+            this.btnScanLaunchBox.Enabled = false;
+            this.btnScanLaunchBox.Location = new System.Drawing.Point(12, 93);
             this.btnScanLaunchBox.Name = "btnScanLaunchBox";
             this.btnScanLaunchBox.Size = new System.Drawing.Size(628, 23);
             this.btnScanLaunchBox.TabIndex = 5;
@@ -161,17 +163,31 @@
             // 
             this.pbScanLaunchBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbScanLaunchBox.Location = new System.Drawing.Point(12, 12);
+            this.pbScanLaunchBox.Location = new System.Drawing.Point(12, 122);
             this.pbScanLaunchBox.Name = "pbScanLaunchBox";
             this.pbScanLaunchBox.Size = new System.Drawing.Size(628, 23);
             this.pbScanLaunchBox.TabIndex = 6;
-            this.pbScanLaunchBox.Visible = false;
+            // 
+            // lvPlatforms
+            // 
+            this.lvPlatforms.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvPlatforms.CheckBoxes = true;
+            this.lvPlatforms.Location = new System.Drawing.Point(12, 12);
+            this.lvPlatforms.Name = "lvPlatforms";
+            this.lvPlatforms.Size = new System.Drawing.Size(628, 75);
+            this.lvPlatforms.Sorting = System.Windows.Forms.SortOrder.Ascending;
+            this.lvPlatforms.TabIndex = 7;
+            this.lvPlatforms.UseCompatibleStateImageBehavior = false;
+            this.lvPlatforms.View = System.Windows.Forms.View.List;
+            this.lvPlatforms.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.lvPlatforms_ItemChecked);
             // 
             // AdvancedSteamImportDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(652, 486);
+            this.ClientSize = new System.Drawing.Size(652, 570);
+            this.Controls.Add(this.lvPlatforms);
             this.Controls.Add(this.pbScanLaunchBox);
             this.Controls.Add(this.btnScanLaunchBox);
             this.Controls.Add(this.lvGames);
@@ -204,5 +220,6 @@
         private System.Windows.Forms.ColumnHeader chLibrary;
         private System.Windows.Forms.Button btnScanLaunchBox;
         private System.Windows.Forms.ProgressBar pbScanLaunchBox;
+        private System.Windows.Forms.ListView lvPlatforms;
     }
 }

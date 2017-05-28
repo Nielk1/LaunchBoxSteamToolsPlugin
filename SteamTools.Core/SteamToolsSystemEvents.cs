@@ -15,6 +15,9 @@ namespace SteamTools
         {
             switch(eventType)
             {
+                case SystemEventTypes.PluginInitialized:
+                    SteamToolsContext.Remap();
+                    break;
                 case SystemEventTypes.BigBoxStartupCompleted:
                 case SystemEventTypes.LaunchBoxStartupCompleted:
                     SteamToolsContext.Init();
