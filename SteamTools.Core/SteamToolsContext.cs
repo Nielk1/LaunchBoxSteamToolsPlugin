@@ -56,17 +56,10 @@ namespace SteamTools
         private static CancellationTokenSource SteamUpdateSentinalToken;
         private static Thread SteamUpdateSentinalThread;
 
-        public static bool LaunchBoxPremiumLicenceFound { get; private set; }
-
         #region System Control
         internal static void Init()
         {
             SteamToolsOptions.LoadConfig();
-            try
-            {
-                LaunchBoxPremiumLicenceFound = File.Exists(@"License.xml");
-            }
-            catch { }
             lock (contextLock)
             {
                 if (context == null)
@@ -149,7 +142,7 @@ namespace SteamTools
                 }
                 if (steamRunning)
                 {
-                    if (LaunchBoxPremiumLicenceFound)// || SteamGameAutoHideShow)
+                    if (PluginHelper.StateManager.IsPremium)// || SteamGameAutoHideShow)
                     {
                         IGame[] games = PluginHelper.DataManager.GetAllGames();
                         if (SteamUpdateSentinalToken.IsCancellationRequested) return;
@@ -172,7 +165,7 @@ namespace SteamTools
                                     }
                                     if (_isInstalled.HasValue)
                                     {
-                                        if (LaunchBoxPremiumLicenceFound)
+                                        if (PluginHelper.StateManager.IsPremium)
                                         {
                                             ICustomField installedField = game.GetAllCustomFields().Where(field => field.Name == "Steam Game Installed").FirstOrDefault();
                                             if (installedField == null)
@@ -270,7 +263,7 @@ namespace SteamTools
                 if (!context.SteamIsRunning)
                 {
                     if(game == null) return null;
-                    if (!LaunchBoxPremiumLicenceFound) return null;
+                    if (!PluginHelper.StateManager.IsPremium) return null;
 
                     ICustomField installedFieldX = game.GetAllCustomFields().Where(field => field.Name == "Steam Game Installed").FirstOrDefault();
                     if (installedFieldX == null)
@@ -295,7 +288,7 @@ namespace SteamTools
                 //}
 
                 bool dataDirty = false;
-                if (LaunchBoxPremiumLicenceFound)
+                if (PluginHelper.StateManager.IsPremium)
                 {
                     ICustomField installedField = game.GetAllCustomFields().Where(field => field.Name == "Steam Game Installed").FirstOrDefault();
                     if (installedField == null)
