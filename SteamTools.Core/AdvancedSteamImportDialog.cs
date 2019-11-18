@@ -1,8 +1,8 @@
-﻿using SteamLaunchable = CarbyneSteamContext.SteamLaunchable;
-using SteamLaunchableApp = CarbyneSteamContext.SteamLaunchableApp;
-using SteamLaunchableModGoldSrc = CarbyneSteamContext.SteamLaunchableModGoldSrc;
-using SteamLaunchableModSource = CarbyneSteamContext.SteamLaunchableModSource;
-using CarbyneSteamContextWrapper;
+﻿using SteamVent;
+using SteamLaunchable = SteamVent.SteamLaunchable;
+using SteamLaunchableApp = SteamVent.SteamLaunchableApp;
+using SteamLaunchableModGoldSrc = SteamVent.SteamLaunchableModGoldSrc;
+using SteamLaunchableModSource = SteamVent.SteamLaunchableModSource;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,6 +22,7 @@ namespace SteamTools
     {
         private SteamContext context;
         List<SteamLaunchable> SteamApps;
+        List<SteamLaunchable> SteamAppsListed;
         //List<SteamLaunchableListViewitem> ListItems;
 
         //private int clearImageIndex = 0;
@@ -49,6 +50,7 @@ namespace SteamTools
         public AdvancedSteamImportDialog()
         {
             SteamApps = new List<SteamLaunchable>();
+            SteamAppsListed = new List<SteamLaunchable>();
             //ListItems = new List<SteamLaunchableListViewitem>();
             context = SteamContext.GetInstance();
             InitializeComponent();
@@ -71,9 +73,14 @@ namespace SteamTools
             //List<IGame> games = PluginHelper.DataManager.GetAllGames().ToList();
             pbScanLaunchBox.Maximum = games.Count;
             int index = 0;
+            //object counterlock = new object();
+            //games.AsParallel().WithDegreeOfParallelism(10).ForAll(game =>
             games.ForEach(game =>
             {
-                pbScanLaunchBox.Value = ++index;
+                //lock (counterlock)
+                {
+                    pbScanLaunchBox.Value = ++index;
+                }
                 if (SteamToolsContext.IsSteamGame(game))
                 {
                     UInt64? GameIDNumber = SteamToolsContext.GetSteamGameID(game);
@@ -81,12 +88,18 @@ namespace SteamTools
                     {
                         if(!IsInstalled.Contains(GameIDNumber.Value) && (SteamToolsContext.IsInstalled(GameIDNumber.Value, game) ?? false))
                         {
-                            IsInstalled.Add(GameIDNumber.Value);
+                            //lock (IsInstalled)
+                            { // the hope here is that all these items are unique, so non-threaded checks if it's present shouldn't matter
+                                IsInstalled.Add(GameIDNumber.Value);
+                            }
                         }
 
                         if (!KnownSteamGames.Contains(GameIDNumber.Value))
                         {
-                            KnownSteamGames.Add(GameIDNumber.Value);
+                            //lock (KnownSteamGames)
+                            {
+                                KnownSteamGames.Add(GameIDNumber.Value);
+                            }
                         }
                     }
                 }
@@ -109,6 +122,7 @@ namespace SteamTools
             lvPlatforms.BeginUpdate();
             cbPlatforms.Items.Clear();
             lvPlatforms.Items.Clear();
+            cbPlatforms.Items.Add("-----NEW-----");
             foreach (IPlatform plat in platforms)
             {
                 cbPlatforms.Items.Add(plat.Name);
@@ -127,6 +141,7 @@ namespace SteamTools
         {
             lvGames.BeginUpdate();
             SteamApps.Clear();
+            SteamAppsListed.Clear();
             lvGames.SmallImageList.Images.Clear();
             CheckedItemMap.Clear();
             //clearImageIndex = 0;
@@ -136,8 +151,11 @@ namespace SteamTools
             List<SteamLaunchableModGoldSrc> gmods = context.GetGoldSrcMods();
             List<SteamLaunchableModSource> smods = context.GetSourceMods();
             SteamApps.AddRange(apps);
+            SteamAppsListed.AddRange(apps);
             SteamApps.AddRange(gmods);
+            SteamAppsListed.AddRange(gmods);
             SteamApps.AddRange(smods);
+            SteamAppsListed.AddRange(smods);
 
             /*foreach(SteamLaunchable app in SteamApps)
             {
@@ -145,7 +163,7 @@ namespace SteamTools
             }*/
 
             //lvGames.VirtualListSize = ListItems.Count;
-            lvGames.VirtualListSize = SteamApps.Count;
+            lvGames.VirtualListSize = SteamAppsListed.Count;
             lvGames.EndUpdate();
 
             SortList();
@@ -163,7 +181,7 @@ namespace SteamTools
 
         private void lvGames_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
-            SteamLaunchable item = SteamApps[e.ItemIndex];
+            SteamLaunchable item = SteamAppsListed[e.ItemIndex];
             if (e.Item == null) e.Item = new ListViewItem(item.Title);
             UInt64 gameid = item.GetShortcutID();
             e.Item.SubItems.Add(gameid.ToString());
@@ -205,6 +223,9 @@ namespace SteamTools
             lvGames.BeginUpdate();
             IQueryable<SteamLaunchable> query = SteamApps.AsQueryable();
             IOrderedQueryable<SteamLaunchable> query2 = null;
+
+            if (!cbShowInLibrary.Checked)
+                query = query.Where(dr => !KnownSteamGames.Contains(dr.GetShortcutID()));
 
             for (int x = Sorts.Count - 1; x >= 0; x--)
             {
@@ -255,7 +276,8 @@ namespace SteamTools
                 }
             }
 
-            SteamApps = (query2 ?? query).ToList();
+            SteamAppsListed = (query2 ?? query).ToList();
+            lvGames.VirtualListSize = SteamAppsListed.Count; // because we can change the list size now we need to reset it
             lvGames.EndUpdate();
         }
 
@@ -304,7 +326,7 @@ namespace SteamTools
                 rect.Y += 2;
                 e.Graphics.DrawRectangle(Pens.Black, rect);
             }
-            SteamLaunchable app = SteamApps[e.ItemIndex];
+            SteamLaunchable app = SteamAppsListed[e.ItemIndex];
             if (CheckedItemMap.ContainsKey(app) && CheckedItemMap[app])
             {
                 Rectangle rect = e.Bounds;
@@ -326,14 +348,17 @@ namespace SteamTools
                 {
                     if (lv.SelectedIndices.Contains(lvi.Index))
                     {
-                        SteamLaunchable app = SteamApps[lvi.Index];
+                        SteamLaunchable app = SteamAppsListed[lvi.Index];
+                        System.Diagnostics.Debug.WriteLine($"{lvi.Index} \"{app.Title}\"");
                         if (!CheckedItemMap.ContainsKey(app)) CheckedItemMap[app] = false;
                         CheckedItemMap[app] = !CheckedItemMap[app];
                         if (lv.SelectedIndices.Count > 0)
                         {
+                            // copy the checked item's check state into each selected item
                             foreach (int index in lv.SelectedIndices)
                             {
-                                SteamLaunchable appX = SteamApps[index];
+                                SteamLaunchable appX = SteamAppsListed[index];
+                                System.Diagnostics.Debug.WriteLine($"?{index} \"{appX.Title}\"");
                                 if (!CheckedItemMap.ContainsKey(appX)) CheckedItemMap[appX] = false;
                                 CheckedItemMap[appX] = CheckedItemMap[app];
                             }
@@ -342,7 +367,8 @@ namespace SteamTools
                     }
                     else
                     {
-                        SteamLaunchable app = SteamApps[lvi.Index];
+                        SteamLaunchable app = SteamAppsListed[lvi.Index];
+                        System.Diagnostics.Debug.WriteLine($"{lvi.Index} \"{app.Title}\"");
                         if (!CheckedItemMap.ContainsKey(app)) CheckedItemMap[app] = false;
                         CheckedItemMap[app] = !CheckedItemMap[app];
                         lv.Invalidate(lvi.Bounds);
@@ -371,15 +397,20 @@ namespace SteamTools
 
         private void lvPlatforms_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
-            btnScanLaunchBox.Enabled = false;
-            foreach(ListViewItem item in lvPlatforms.Items)
+            //btnScanLaunchBox.Enabled = false;
+            foreach (ListViewItem item in lvPlatforms.Items)
             {
                 if(item != null && item.Checked)
                 {
-                    btnScanLaunchBox.Enabled = true;
+                    //btnScanLaunchBox.Enabled = true;
                     break;
                 }
             }
+        }
+
+        private void CbShowInLibrary_CheckedChanged(object sender, EventArgs e)
+        {
+            SortList();
         }
     }
 

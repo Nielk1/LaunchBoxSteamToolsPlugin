@@ -41,6 +41,7 @@
             this.btnScanLaunchBox = new System.Windows.Forms.Button();
             this.pbScanLaunchBox = new System.Windows.Forms.ProgressBar();
             this.lvPlatforms = new System.Windows.Forms.ListView();
+            this.cbShowInLibrary = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // cbPlatforms
@@ -107,6 +108,7 @@
             this.lvGames.Enabled = false;
             this.lvGames.FullRowSelect = true;
             this.lvGames.GridLines = true;
+            this.lvGames.HideSelection = false;
             this.lvGames.Location = new System.Drawing.Point(12, 180);
             this.lvGames.Name = "lvGames";
             this.lvGames.OwnerDraw = true;
@@ -150,10 +152,9 @@
             // 
             this.btnScanLaunchBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnScanLaunchBox.Enabled = false;
             this.btnScanLaunchBox.Location = new System.Drawing.Point(12, 93);
             this.btnScanLaunchBox.Name = "btnScanLaunchBox";
-            this.btnScanLaunchBox.Size = new System.Drawing.Size(628, 23);
+            this.btnScanLaunchBox.Size = new System.Drawing.Size(513, 23);
             this.btnScanLaunchBox.TabIndex = 5;
             this.btnScanLaunchBox.Text = "Scan LaunchBox Games";
             this.btnScanLaunchBox.UseVisualStyleBackColor = true;
@@ -173,6 +174,7 @@
             this.lvPlatforms.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lvPlatforms.CheckBoxes = true;
+            this.lvPlatforms.HideSelection = false;
             this.lvPlatforms.Location = new System.Drawing.Point(12, 12);
             this.lvPlatforms.Name = "lvPlatforms";
             this.lvPlatforms.Size = new System.Drawing.Size(628, 75);
@@ -182,11 +184,26 @@
             this.lvPlatforms.View = System.Windows.Forms.View.List;
             this.lvPlatforms.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.lvPlatforms_ItemChecked);
             // 
+            // cbShowInLibrary
+            // 
+            this.cbShowInLibrary.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbShowInLibrary.AutoSize = true;
+            this.cbShowInLibrary.Checked = true;
+            this.cbShowInLibrary.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbShowInLibrary.Location = new System.Drawing.Point(531, 97);
+            this.cbShowInLibrary.Name = "cbShowInLibrary";
+            this.cbShowInLibrary.Size = new System.Drawing.Size(109, 17);
+            this.cbShowInLibrary.TabIndex = 8;
+            this.cbShowInLibrary.Text = "Show \"In Library\"";
+            this.cbShowInLibrary.UseVisualStyleBackColor = true;
+            this.cbShowInLibrary.CheckedChanged += new System.EventHandler(this.CbShowInLibrary_CheckedChanged);
+            // 
             // AdvancedSteamImportDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(652, 570);
+            this.Controls.Add(this.cbShowInLibrary);
             this.Controls.Add(this.lvPlatforms);
             this.Controls.Add(this.pbScanLaunchBox);
             this.Controls.Add(this.btnScanLaunchBox);
@@ -221,5 +238,6 @@
         private System.Windows.Forms.Button btnScanLaunchBox;
         private System.Windows.Forms.ProgressBar pbScanLaunchBox;
         private System.Windows.Forms.ListView lvPlatforms;
+        private System.Windows.Forms.CheckBox cbShowInLibrary;
     }
 }

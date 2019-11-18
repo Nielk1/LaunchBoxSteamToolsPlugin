@@ -1,4 +1,4 @@
-﻿using CarbyneSteamContext;
+﻿using SteamVent;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -35,15 +35,41 @@ namespace SteamTools
                 List<SteamLaunchable> SteamGames = Dlg.CheckedItems;
                 if (SteamGames.Count > 0)
                 {
+                    string platform = Dlg.SelectedPlatform;
+                    if (platform == @"-----NEW-----")
+                    {
+                        TextInputDialog textDlg = new TextInputDialog() { Title = "Platform" };
+                        textDlg.ShowDialog();
+                        platform = textDlg.Text;
+                    }
+
                     Dlg.CheckedItems.ForEach(steamGame =>
                     {
                         IGame game = PluginHelper.DataManager.AddNewGame(steamGame.Title);
                         game.ApplicationPath = $@"steam://rungameid/{steamGame.GetShortcutID()}";
-                        game.Platform = Dlg.SelectedPlatform;
+                        game.Platform = platform;
                         game.Status = "Imported from Steam with Steam Tools";
                         game.Source = "Steam Tools";
                         game.DateAdded = Now;
                         game.DateModified = Now;
+
+                        ICustomField customField = game.AddNewCustomField();
+                        customField.Name = "Steam AppType";
+                        switch (steamGame.AppType)
+                        {
+                            case "game":
+                                customField.Value = "Game";
+                                break;
+                            case "application":
+                                customField.Value = "Application";
+                                break;
+                            case "demo":
+                                customField.Value = "Demo";
+                                break;
+                            default:
+                                customField.Value = steamGame.AppType;
+                                break;
+                        }
                     });
                     PluginHelper.DataManager.Save();
                 }

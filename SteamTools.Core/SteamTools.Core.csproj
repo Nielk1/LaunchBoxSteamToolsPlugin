@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SteamTools</RootNamespace>
     <AssemblyName>SteamTools.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,15 +50,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BigBox">
-      <HintPath>..\..\..\..\..\Program Files\LaunchBox\BigBox.exe</HintPath>
+      <HintPath>D:\LaunchBox\BigBox.exe</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Caliburn.Micro">
-      <HintPath>..\..\..\..\..\Program Files\LaunchBox\Themes\Default\References\Caliburn.Micro.dll</HintPath>
+      <HintPath>D:\LaunchBox\LBThemes\Default\References\Caliburn.Micro.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="LaunchBox">
-      <HintPath>..\..\..\..\..\Program Files\LaunchBox\LaunchBox.exe</HintPath>
+      <HintPath>D:\LaunchBox\LaunchBox.exe</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
@@ -65,6 +66,9 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Common, Version=4.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Common.4.6.0\lib\net461\System.Drawing.Common.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
@@ -75,15 +79,15 @@
     <Reference Include="System.Xml" />
     <Reference Include="UIAutomationProvider" />
     <Reference Include="Unbroken.LaunchBox">
-      <HintPath>..\..\..\..\..\Program Files\LaunchBox\Metadata\Unbroken.LaunchBox.dll</HintPath>
+      <HintPath>D:\LaunchBox\Metadata\Unbroken.LaunchBox.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unbroken.LaunchBox.Plugins">
-      <HintPath>..\..\..\..\..\Program Files\LaunchBox\Metadata\Unbroken.LaunchBox.Plugins.dll</HintPath>
+      <HintPath>D:\LaunchBox\Metadata\Unbroken.LaunchBox.Plugins.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unbroken.LaunchBox.Wpf">
-      <HintPath>..\..\..\..\..\Program Files\LaunchBox\Metadata\Unbroken.LaunchBox.Wpf.dll</HintPath>
+      <HintPath>D:\LaunchBox\Metadata\Unbroken.LaunchBox.Wpf.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="WindowsBase" />
@@ -104,12 +108,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="SelectSteamInstallLocationView.xaml.cs">
-      <DependentUpon>SelectSteamInstallLocationView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SteamInstallGameMenuItem.cs" />
     <Compile Include="SteamToolsContext.cs" />
+    <Compile Include="SteamToolsGetSteamBannerGameMenuItemPlugin.cs" />
+    <Compile Include="SteamToolsGetMetadataGameMenuItemPlugin.cs" />
+    <Compile Include="SteamToolsGetBoxGameMenuItemPlugin.cs" />
+    <Compile Include="SteamToolsGetLogosGameMenuItemPlugin.cs" />
     <Compile Include="SteamToolsOptions.cs" />
     <Compile Include="SteamToolsOptionsDialog.cs">
       <SubType>Form</SubType>
@@ -119,6 +123,12 @@
     </Compile>
     <Compile Include="SteamToolsSystemEvents.cs" />
     <Compile Include="SteamToolsOptionsSystemMenuItem.cs" />
+    <Compile Include="TextInputDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TextInputDialog.Designer.cs">
+      <DependentUpon>TextInputDialog.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AdvancedSteamImportDialog.resx">
@@ -131,8 +141,12 @@
     <EmbeddedResource Include="SteamToolsOptionsDialog.resx">
       <DependentUpon>SteamToolsOptionsDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="TextInputDialog.resx">
+      <DependentUpon>TextInputDialog.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Resources\steam.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -140,31 +154,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SelectSteamInstallLocationView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\CarbyneSteamContext\CarbyneSteamContextServer\CarbyneSteamContextServer.csproj">
-      <Project>{4fe956ce-d749-4892-b3b5-4ccc0f091931}</Project>
-      <Name>CarbyneSteamContextServer</Name>
-      <Private>False</Private>
+    <ProjectReference Include="..\..\SteamVent\SteamVent.Common\SteamVent.Common.csproj">
+      <Project>{F1096E3A-C50A-43A3-9A46-6112D4BBAE38}</Project>
+      <Name>SteamVent.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\CarbyneSteamContext\CarbyneSteamContextWrapper\CarbyneSteamContextWrapper.csproj">
-      <Project>{cd64560e-c24a-47b5-b4ed-ae05aec1b004}</Project>
-      <Name>CarbyneSteamContextWrapper</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\CarbyneSteamContext\CarbyneSteamContext\CarbyneSteamContext.csproj">
-      <Project>{2b595766-6eca-432d-8355-0e74bf68a633}</Project>
-      <Name>CarbyneSteamContext</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\open-steamworks\Steam4NET2\Steam4NET2\Steam4NET.csproj">
-      <Project>{1a204257-fe82-4bbe-9ed4-40694821c31f}</Project>
-      <Name>Steam4NET</Name>
-      <Private>False</Private>
+    <ProjectReference Include="..\..\SteamVent\SteamVent\SteamVent.csproj">
+      <Project>{b78bb558-69d0-4d28-991a-261903988d1a}</Project>
+      <Name>SteamVent</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

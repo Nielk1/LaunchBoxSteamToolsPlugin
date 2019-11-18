@@ -1,5 +1,4 @@
 ﻿using System;
-using CarbyneSteamContextWrapper;
 using Unbroken.LaunchBox.Plugins.Data;
 using System.Linq;
 using System.Threading;
@@ -8,6 +7,7 @@ using Unbroken.LaunchBox.Plugins;
 using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using SteamVent;
 
 namespace SteamTools
 {
@@ -109,7 +109,7 @@ namespace SteamTools
                 {
                     if (!SteamActiveCheck && context.SteamIsRunning)
                     {
-                        context.Init(ProxyServerPath: "Plugins", SearchSubfolders: true);
+                        //context.Init(ProxyServerPath: "Plugins", SearchSubfolders: true);
                         SteamActiveCheck = true;
                     }
                     if (SteamActiveCheck && !context.SteamIsRunning)
@@ -126,7 +126,7 @@ namespace SteamTools
 
         private static void CheckSteamGames()
         {
-            for (int i = 0; i < 60; i++)
+            /*for (int i = 0; i < 60; i++)
             {
                 if (SteamUpdateSentinalToken.IsCancellationRequested) return;
                 Thread.Sleep(1000);
@@ -222,7 +222,7 @@ namespace SteamTools
                         Thread.Sleep(1000);
                     }
                 }
-            }
+            }*/
         }
         #endregion System Control
 
@@ -280,7 +280,7 @@ namespace SteamTools
 
                 bool _isInstalled = context.IsInstalled(GameID);
                 if (game == null)
-                    return context.IsInstalled(GameID);
+                    return _isInstalled;// context.IsInstalled(GameID);
 
                 //if(SteamGameAutoHideShow)
                 //{
@@ -331,7 +331,7 @@ namespace SteamTools
         /// Get array of Steam libraries
         /// </summary>
         /// <returns></returns>
-        public static string[] GetGameLibraries()
+        /*public static string[] GetGameLibraries()
         {
             lock (contextLock)
             {
@@ -339,13 +339,13 @@ namespace SteamTools
                     return null;
                 return context.GetGameLibraries();
             }
-        }
+        }*/
 
         /// <summary>
         /// Install a game in Steam
         /// </summary>
         /// <param name="GameID">Steam GameID</param>
-        public static void InstallGame(ulong GameID)
+        /*public static void InstallGame(ulong GameID)
         {
             lock (contextLock)
             {
@@ -353,7 +353,7 @@ namespace SteamTools
                     return;
                 context.InstallGame(GameID);
             }
-        }
+        }*/
 
         /// <summary>
         /// Install a game in Steam
@@ -361,7 +361,7 @@ namespace SteamTools
         /// <param name="GameID">Steam GameID</param>
         /// <param name="index">Steam library index</param>
         /// <returns></returns>
-        public static Steam4NET.EAppUpdateError? InstallGame(ulong GameID, int index)
+        /*public static Steam4NET.EAppUpdateError? InstallGame(ulong GameID, int index)
         {
             lock (contextLock)
             {
@@ -369,6 +369,6 @@ namespace SteamTools
                     return null;
                 return context.InstallGame(GameID, index);
             }
-        }
+        }*/
     }
 }
