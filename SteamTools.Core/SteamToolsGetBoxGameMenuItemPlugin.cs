@@ -61,7 +61,7 @@ namespace SteamTools
                         if (app == null)
                             continue;
 
-                        if (app.extra_has_library_hero)
+                        if (app.extra_has_library_capsule)
                         {
                             if (game.GetAllImagesWithDetails("Box - Front").Length == 0)
                             {
